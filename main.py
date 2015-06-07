@@ -7,9 +7,15 @@ from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from oauth2client.client import OAuth2WebServerFlow
 
+import json
+
+with open('config.json') as json_data_file:
+    data = json.load(json_data_file)
+print(data)
+
 
 # Copy your credentials from the console
-CLIENT_ID = 'YOUR_CLIENT_ID'
+CLIENT_ID = data['google_drive']['client_id']
 CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
 
 # Check https://developers.google.com/drive/scopes for all available scopes
