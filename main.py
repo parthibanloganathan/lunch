@@ -16,13 +16,12 @@ gc = gspread.authorize(credentials)
 
 worksheet = gc.open(str(data['sheet_name'])).sheet1
 
-emails = clean(worksheet.col_values(1))
-first_names = clean(worksheet.col_values(2))
-last_names = clean(worksheet.col_values(3))
-attending = clean(worksheet.col_values(4))
+emails = clean(worksheet.col_values(2))
+first_names = clean(worksheet.col_values(3))
+last_names = clean(worksheet.col_values(4))
+attending = clean(worksheet.col_values(5))
+availability = clean(worksheet.col_values(6))
 
-print emails
-
-emails, first_names, last_names = filter_attending(emails, first_names, last_names, attending)
+emails, first_names, last_names, availability = filter_attending(emails, first_names, last_names, attending, availability)
 
 print emails
