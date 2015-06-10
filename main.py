@@ -1,54 +1,28 @@
-#!/usr/bin/python
-
-import httplib2
-import pprint
-
-from apiclient.discovery import build
-from apiclient.http import MediaFileUpload
-from oauth2client.client import OAuth2WebServerFlow
-
+import gspread
 import json
 
+from email_lib import send_email
+from spreadsheet_utils import *
+from oauth2client.client import SignedJwtAssertionCredentials
+
 with open('config.json') as json_data_file:
-    data = json.load(json_data_file)
-print(data)
+    data = json.load(json_data_file)['gspread']
 
+json_key = json.load(open(str(data['private_key_file'])))
+scope = ['https://spreadsheets.google.com/feeds']
 
-# Copy your credentials from the console
-CLIENT_ID = data['google_drive']['client_id']
-CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+gc = gspread.authorize(credentials)
 
-# Check https://developers.google.com/drive/scopes for all available scopes
-OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive'
+worksheet = gc.open(str(data['sheet_name'])).sheet1
 
-# Redirect URI for installed apps
-REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'
+emails = clean(worksheet.col_values(1))
+first_names = clean(worksheet.col_values(2))
+last_names = clean(worksheet.col_values(3))
+attending = clean(worksheet.col_values(4))
 
-# Path to the file to upload
-FILENAME = 'document.txt'
+print emails
 
-# Run through the OAuth flow and retrieve credentials
-flow = OAuth2WebServerFlow(CLIENT_ID, CLIENT_SECRET, OAUTH_SCOPE,
-                           redirect_uri=REDIRECT_URI)
-authorize_url = flow.step1_get_authorize_url()
-print 'Go to the following link in your browser: ' + authorize_url
-code = raw_input('Enter verification code: ').strip()
-credentials = flow.step2_exchange(code)
+emails, first_names, last_names = filter_attending(emails, first_names, last_names, attending)
 
-# Create an httplib2.Http object and authorize it with our credentials
-http = httplib2.Http()
-http = credentials.authorize(http)
-
-drive_service = build('drive', 'v2', http=http)
-
-# Insert a file
-media_body = MediaFileUpload(FILENAME, mimetype='text/plain', resumable=True)
-body = {
-  'title': 'My document',
-  'description': 'A test document',
-  'mimeType': 'text/plain'
-}
-
-file = drive_service.files().insert(body=body, media_body=media_body).execute()
-pprint.pprint(file)
-
+print emails

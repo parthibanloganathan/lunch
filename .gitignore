@@ -56,5 +56,8 @@ docs/_build/
 # PyBuilder
 target/
 
-# Config
-config.json
+# Config and Private Key are json
+*.json
+
+# Mac
+.DS_Store
