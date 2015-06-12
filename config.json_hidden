@@ -1,0 +1,13 @@
+{
+  "gspread": {
+    "private_key_file": "[PRIVATE_KEY].json",
+    "group_size": "[SHEET NAME IN GOOGLE DRIVE (MAKE SURE TO SHARE THE SHEET WITH THE CLIENT EMAIL IN THE PRIVATE KEY)]"
+  },
+  "email": {
+    "sender": "[XYZ FROM XYZ@gmail.com]",
+    "message": "Hi {} and {},\n\nYou've been randomly grouped together to have lunch today at {} at 12:30 pm. Feel free to discuss amongst yourselves to change the time or location to whatever's mutually convenient.\n\nHope you have an awesome lunch and make new friends!\n\nIf you no longer want to be part of lunches, visit {} and unsubscribe. Also let folks know you can't make it.",
+    "subject": "Lunch Group - ",
+    "signup_link": "[GOOGLE FORM LINK TO UNSUBSCRIBE]",
+    "cafes": ["Cafe 1", "Cafe 2", "Cafe 3"]
+  }
+}
